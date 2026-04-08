@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>REFRESH휴가/근속수당 신청서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+/* --- 뒤로가기 버튼 스타일 --- */
+        .back-nav-container {
+            width: 210mm;
+            margin: 0 auto 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 18px;
+            background-color: #ffffff;
+            color: #555;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid #ccc;
+        }
+        .back-btn:hover {
+            background-color: #ff6b00;
+            color: #fff;
+            border-color: #ff6b00;
+        }
+        .back-btn svg { margin-right: 8px; }
+
+        /* --- 기존 신청서 스타일 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: #d8d8d8;
+            padding: 32px 0 48px;
+            color: #1a1a1a;
+        }
+
+        /* 인쇄 버튼 */
+        .no-print {
+            width: 210mm;
+            margin: 0 auto 12px;
+            text-align: right;
+        }
+        .pdf-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 3px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: background 0.2s;
+        }
+        .pdf-btn:hover { background: #333; }
+
+        /* A4 페이지 */
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 13mm 15mm 10mm;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            overflow: hidden;
+        }
+
+        /* 헤더 */
+        .doc-meta {
+            font-size: 10px;
+            color: #888;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 3px;
+            padding-bottom: 10px;
+            border-bottom: 2.5px solid #1a1a1a;
+        }
+        .doc-subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 14px;
+            letter-spacing: 0.04em;
+        }
+
+        /* 섹션 타이틀 */
+        .sec-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sec-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background: #1a1a1a;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+
+        /* 공통 테이블 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 11px;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 5px 8px;
+            vertical-align: middle;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 11px;
+            color: #444;
+            white-space: nowrap;
+            text-align: center;
+            letter-spacing: 0.02em;
+            width: 80px;
+        }
+        td { color: #1a1a1a; }
+
+        /* 입력 필드 */
+        input[type="text"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            border: none;
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            font-size: 12px;
+            outline: none;
+            background: transparent;
+            color: #1a1a1a;
+        }
+        input[type="text"]::placeholder,
+        textarea::placeholder { color: #bbb; font-size: 11px; }
+        textarea { resize: none; line-height: 1.6; }
+        input[type="date"] { cursor: pointer; }
+
+        input[type="checkbox"] {
+            width: 13px;
+            height: 13px;
+            cursor: pointer;
+            accent-color: #1a1a1a;
+            vertical-align: middle;
+            margin-right: 4px;
+        }
+
+        /* 자동계산 강조 */
+        .auto-val {
+            font-weight: 700;
+            color: #1a1a1a;
+            font-size: 12px;
+        }
+
+        /* 지원내용 강조 셀 */
+        .highlight-cell {
+            background: #f9f9f9;
+        }
+
+        /* 지원대상 아님 */
+        .not-eligible {
+            color: #aaa;
+            font-style: italic;
+            font-size: 11px;
+        }
+
+        /* 확인사항 */
+        .declaration {
+            font-size: 10.5px;
+            line-height: 1.75;
+            border: 1px solid #d0d0d0;
+            background: #fafafa;
+            padding: 9px 11px;
+            color: #444;
+            word-break: keep-all;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+        /* 서명란 */
+        .footer {
+            margin-top: auto;
+            padding-top: 10px;
+        }
+        .footer-date {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        .sign-block {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            gap: 0;
+            margin-bottom: 10px;
+        }
+        .sign-label {
+            font-size: 13px;
+            font-weight: 500;
+            white-space: nowrap;
+            margin-right: 8px;
+            padding-bottom: 2px;
+        }
+        .sign-line {
+            width: 190px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-right: 8px;
+            padding-bottom: 2px;
+        }
+        .sign-line input {
+            border: none;
+            outline: none;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: transparent;
+            color: #1a1a1a;
+            padding: 0;
+        }
+        .sign-line input::placeholder { color: #ccc; font-size: 12px; font-weight: 400; }
+        .sign-seal {
+            font-size: 13px;
+            font-weight: 500;
+            padding-bottom: 2px;
+        }
+        .footer-recipient {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: 0.02em;
+        }
+
+        /* 인쇄 */
+        @media print {
+            body { background: none; padding: 0; }
+            .no-print { display: none; }
+            .page {
+                margin: 0;
+                box-shadow: none;
+                width: 210mm;
+                height: 297mm;
+            }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print back-nav-container">
+    <a href="index.html" class="back-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        목록으로 돌아가기
+    </a>
+    <button class="pdf-btn" onclick="window.print()">🖨 PDF 저장 / 인쇄</button>
+</div>
+
+<div class="page">
+
+    <div class="doc-meta">PLUSX Corp. — 복지지원서류</div>
+    <div class="doc-title">REFRESH 휴가 / 근속수당 신청서</div>
+
+
+    <!-- ① 인적사항 -->
+    <div class="sec-title">인적사항</div>
+    <table>
+        <tr>
+            <th>성명 / 소속</th>
+            <td colspan="3"><input type="text" placeholder="홍길동 / 개발팀"></td>
+        </tr>
+        <tr>
+            <th>입사일자</th>
+            <td><input type="date" id="hireDate" max="9999-12-31" oninput="calculateServiceInfo()"></td>
+            <th>실 근속연차</th>
+            <td class="highlight-cell"><span class="auto-val" id="serviceYearsDisplay">입사일 입력 시 자동 계산</span></td>
+        </tr>
+        <tr>
+            <th>휴직 여부</th>
+            <td colspan="3">
+                <input type="checkbox" id="hasLeave" onchange="toggleLeaveInput()">
+                <label for="hasLeave" style="font-size:12px; cursor:pointer;">휴직 기간 있음</label>
+                &nbsp;
+                ( <input type="date" id="leaveStart" style="width:110px;" max="9999-12-31" disabled oninput="calculateServiceInfo()">
+                &nbsp;~&nbsp;
+                <input type="date" id="leaveEnd" style="width:110px;" max="9999-12-31" disabled oninput="calculateServiceInfo()"> )
+            </td>
+        </tr>
+        <tr>
+            <th>계좌번호</th>
+            <td colspan="3"><input type="text" placeholder="은행명 / 계좌번호 (예: 국민은행 / 123456-78-901234)"></td>
+        </tr>
+    </table>
+
+    <!-- ② 지원내용 -->
+    <div class="sec-title">지원 내용 (자동 반영)</div>
+    <table>
+        <tr>
+            <th>지원신청금액</th>
+            <td class="highlight-cell"><span class="auto-val" id="allowanceDisplay">—</span></td>
+            <th>지원신청휴가</th>
+            <td class="highlight-cell"><span class="auto-val" id="vacationDisplay">—</span></td>
+        </tr>
+    </table>
+
+    <!-- ③ 연차 사용 계획 -->
+    <div class="sec-title">연차 사용 계획</div>
+    <table>
+        <tr>
+            <th>사용 예정일</th>
+            <td colspan="3">
+                <div style="display:flex; align-items:center; gap:6px;">
+                    <input type="date" name="vacStart" style="flex:1;" max="9999-12-31">
+                    <span style="color:#888; font-size:11px;">~</span>
+                    <input type="date" name="vacEnd" style="flex:1;" max="9999-12-31">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>사용 목적</th>
+            <td colspan="3">
+                <textarea placeholder="사용 목적을 간략히 입력해 주세요." style="height:52px;"></textarea>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ④ 확인사항 -->
+    <div class="declaration">
+        본인은 위와 같이 근속수당 / REFRESH 휴가를 신청하고자 합니다.
+    </div>
+
+    <!-- ⑤ 서명란 -->
+    <div class="footer">
+        <div class="footer-date" id="todayDate"></div>
+        <div class="sign-block">
+            <span class="sign-label">근로자 성명</span>
+            <div class="sign-line">
+                <input type="text" placeholder="성명 기재 후 서명">
+            </div>
+            <span class="sign-seal">(인)</span>
+        </div>
+        <div class="footer-recipient">플러스엑스 주식회사 대표이사 귀하</div>
+    </div>
+
+</div>
+
+<script>
+    // 오늘 날짜
+    (function () {
+        const t = new Date();
+        document.getElementById('todayDate').textContent =
+            `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
+    })();
+
+    // 근속연차 → 지원금/휴가 매핑
+    const REWARD_MAP = [
+        { years: 2,  amount: "100만원",    vacation: "3일 휴가" },
+        { years: 4,  amount: "300만원",    vacation: "5일 휴가" },
+        { years: 6,  amount: "500만원",    vacation: "7일 휴가" },
+        { years: 8,  amount: "700만원",    vacation: "14일 휴가" },
+        { years: 10, amount: "1,000만원",  vacation: "한달 휴가 (휴일 포함)" },
+        { years: 14, amount: "500만원",    vacation: "14일 휴가" },
+        { years: 18, amount: "1,000만원",  vacation: "한달 휴가 (휴일 포함)" },
+    ];
+
+    function toggleLeaveInput() {
+        const on = document.getElementById('hasLeave').checked;
+        document.getElementById('leaveStart').disabled = !on;
+        document.getElementById('leaveEnd').disabled = !on;
+        if (!on) {
+            document.getElementById('leaveStart').value = '';
+            document.getElementById('leaveEnd').value = '';
+        }
+        calculateServiceInfo();
+    }
+
+    function calculateServiceInfo() {
+        const hireDateStr = document.getElementById('hireDate').value;
+        const svcEl  = document.getElementById('serviceYearsDisplay');
+        const aEl    = document.getElementById('allowanceDisplay');
+        const vEl    = document.getElementById('vacationDisplay');
+
+        if (!hireDateStr) return;
+
+        const hireDate = new Date(hireDateStr);
+        const today = new Date();
+        let diffMs = today - hireDate;
+
+        // 휴직 공제
+        const hasLeave = document.getElementById('hasLeave').checked;
+        const lsStr = document.getElementById('leaveStart').value;
+        const leStr = document.getElementById('leaveEnd').value;
+        if (hasLeave && lsStr && leStr) {
+            const ls = new Date(lsStr);
+            const le = new Date(leStr);
+            if (le >= ls) diffMs -= (le - ls + 86400000);
+        }
+
+        const netDays  = Math.max(0, Math.floor(diffMs / 86400000));
+        const years    = Math.floor(netDays / 365.25);
+        const months   = Math.floor((netDays % 365.25) / 30.44);
+
+        svcEl.textContent = `${years}년 ${months}개월`;
+        svcEl.classList.remove('not-eligible');
+
+        // 지원 내용 매핑
+        let reward = null;
+        for (let i = REWARD_MAP.length - 1; i >= 0; i--) {
+            if (years >= REWARD_MAP[i].years) { reward = REWARD_MAP[i]; break; }
+        }
+
+        if (reward) {
+            aEl.textContent = reward.amount;
+            vEl.textContent = reward.vacation;
+            aEl.classList.remove('not-eligible');
+            vEl.classList.remove('not-eligible');
+        } else {
+            aEl.textContent = '지원 대상 아님 (2년 미만)';
+            vEl.textContent = '지원 대상 아님 (2년 미만)';
+            aEl.classList.add('not-eligible');
+            vEl.classList.add('not-eligible');
+        }
+    }
+</script>
+</body>
+</html>
