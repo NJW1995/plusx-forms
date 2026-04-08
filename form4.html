@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전세자금대출 이자지원 변경 신청서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+        /* --- 상단 버튼 영역 (인쇄 시 숨김) --- */
+        .no-print-area {
+            width: 210mm;
+            margin: 0 auto 12px;
+            display: flex;
+            justify-content: space-between; /* 왼쪽과 오른쪽 끝으로 분산 배치 */
+            align-items: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 18px;
+            background-color: #ffffff;
+            color: #555;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid #ccc;
+        }
+        .back-btn:hover {
+            background-color: #ff6b00;
+            color: #fff;
+            border-color: #ff6b00;
+        }
+        .back-btn svg { margin-right: 8px; }
+
+        .pdf-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 3px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: background 0.2s;
+        }
+        .pdf-btn:hover { background: #333; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: #d8d8d8;
+            padding: 32px 0 48px;
+            color: #1a1a1a;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 13mm 15mm 10mm;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .doc-meta {
+            font-size: 10px;
+            color: #888;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 3px;
+            padding-bottom: 10px;
+            border-bottom: 2.5px solid #1a1a1a;
+        }
+
+        .sec-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            margin: 10px 0 5px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sec-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background: #1a1a1a;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 0;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 5px 8px;
+            vertical-align: middle;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 11px;
+            color: #444;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .col-before { background: #f0f4f8; color: #3a5a7a; font-weight: 700; }
+        .col-after { background: #f0f5f0; color: #2d6a3f; font-weight: 700; }
+        .row-disabled { background: #f9f9f9 !important; opacity: 0.5; pointer-events: none; }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            border: none;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+            background: transparent;
+            color: #1a1a1a;
+            resize: none;
+        }
+        input::placeholder, textarea::placeholder { color: #bbb; font-size: 11px; }
+
+        .num-input { text-align: right; font-variant-numeric: tabular-nums; }
+        
+        .change-check {
+            width: 14px;
+            height: 14px;
+            cursor: pointer;
+            accent-color: #1a1a1a;
+        }
+
+        .address-textarea {
+            width: 100%;
+            border: none;
+            font-family: inherit;
+            font-size: 12px;
+            outline: none;
+            background: transparent;
+            line-height: 1.6;
+            height: 36px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .request-text {
+            font-size: 12px;
+            text-align: center;
+            color: #555;
+            margin-top: 20px;
+            line-height: 1.7;
+        }
+
+        .footer {
+            margin-top: auto;
+            padding-top: 10px;
+            text-align: center;
+        }
+        .footer-date {
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        .sign-block {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        .sign-label { font-size: 13px; font-weight: 500; margin-right: 8px; }
+        .sign-line {
+            width: 190px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: center;
+            margin-right: 8px;
+        }
+        .sign-line input {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .footer-recipient {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+            letter-spacing: 0.02em;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .no-print-area { display: none; }
+            .page { margin: 0; box-shadow: none; width: 210mm; height: 297mm; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print-area">
+    <a href="index.html" class="back-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        목록으로 돌아가기
+    </a>
+    <button class="pdf-btn" onclick="window.print()">🖨 PDF 저장 / 인쇄</button>
+</div>
+
+<div class="page">
+    <div class="doc-meta">[별지3] PLUSX Corp. — 복지지원서류</div>
+    <div class="doc-title">전세자금대출 이자지원 변경 신청서</div>
+
+    <div class="sec-title">인적사항</div>
+    <table>
+        <tr>
+            <th style="width:100px;">성명 / 소속</th>
+            <td><input type="text" placeholder="홍길동 / 개발팀"></td>
+            <th style="width:100px;">주민등록번호</th>
+            <td><input type="text" placeholder="000000-0000000" maxlength="14"></td>
+        </tr>
+        <tr>
+            <th>입사일자</th>
+            <td><input type="text" id="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this); calculateTenure();"></td>
+            <th>주소</th>
+            <td style="vertical-align:top; padding-top:6px;">
+                <textarea class="address-textarea" placeholder="거주지 주소"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th>휴직 여부</th>
+            <td colspan="3">
+                <input type="checkbox" id="hasLeave" onchange="toggleLeave()">
+                <label for="hasLeave" style="font-size:11px; cursor:pointer;">휴직 기간 있음</label>
+                &nbsp;
+                ( <input type="text" id="leaveStart" style="width:85px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateTenure();">
+                ~
+                <input type="text" id="leaveEnd" style="width:85px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateTenure();"> )
+            </td>
+        </tr>
+        <tr>
+            <th>실 근속연수</th>
+            <td colspan="3" id="tenureResult" style="background:#fafafa;">입사일자를 입력하면 자동 계산됩니다.</td>
+        </tr>
+    </table>
+
+    <div class="sec-title">신청내역</div>
+    <table>
+        <tr>
+            <th style="width:100px;">신청회차</th>
+            <td style="width:160px;">
+                <select>
+                    <option value="1">1회차 (최대 2회)</option>
+                    <option value="2">2회차 (최대 2회)</option>
+                </select>
+            </td>
+            <th style="width:100px;">신청기간</th>
+            <td>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                    <span style="color:#888;">~</span>
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>총 지원 예상금액</th>
+            <td colspan="3">
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <input type="text" class="num-input" style="font-weight:700;" placeholder="0" oninput="handleNumInput(this)">
+                    <span style="font-weight:600;">원</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="sec-title">대출 변경 내역</div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:50px;">선택</th>
+                <th style="width:100px;">항목</th>
+                <th class="col-before">변경 전</th>
+                <th class="col-after">변경 후</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td align="center"><input type="checkbox" class="change-check" onchange="toggleRow(this)"></td>
+                <th>이자지원비율</th>
+                <td class="row-disabled"><select disabled><option value="">선택</option><option>60%</option><option>80%</option><option>100%</option></select></td>
+                <td class="row-disabled"><select disabled><option value="">선택</option><option>60%</option><option>80%</option><option>100%</option></select></td>
+            </tr>
+            <tr>
+                <td align="center"><input type="checkbox" class="change-check" onchange="toggleRow(this)"></td>
+                <th>대출금액(숫자)</th>
+                <td class="row-disabled"><input type="text" class="num-input" placeholder="0" disabled oninput="handleNumInput(this)"></td>
+                <td class="row-disabled"><input type="text" class="num-input" placeholder="0" disabled oninput="handleNumInput(this)"></td>
+            </tr>
+            <tr>
+                <td align="center"><input type="checkbox" class="change-check" onchange="toggleRow(this)"></td>
+                <th>대출기관</th>
+                <td class="row-disabled"><input type="text" placeholder="변경 전 기관명" disabled></td>
+                <td class="row-disabled"><input type="text" placeholder="변경 후 기관명" disabled></td>
+            </tr>
+            <tr>
+                <td align="center"><input type="checkbox" class="change-check" onchange="toggleRow(this)"></td>
+                <th>주소지</th>
+                <td class="row-disabled"><textarea class="address-textarea" placeholder="변경 전 주소" disabled></textarea></td>
+                <td class="row-disabled"><textarea class="address-textarea" placeholder="변경 후 주소" disabled></textarea></td>
+            </tr>
+            <tr>
+                <td align="center"><input type="checkbox" class="change-check" onchange="toggleRow(this)"></td>
+                <th>대출기간</th>
+                <td class="row-disabled">
+                    <div style="display:flex; align-items:center; gap:3px;">
+                        <input type="text" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this)"> ~ 
+                        <input type="text" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this)">
+                    </div>
+                </td>
+                <td class="row-disabled">
+                    <div style="display:flex; align-items:center; gap:3px;">
+                        <input type="text" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this)"> ~ 
+                        <input type="text" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this)">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="request-text">
+        위와 같이 전세자금대출 이자지원을 신청하니 검토하여 주시기 바랍니다.
+    </div>
+
+    <div class="footer">
+        <div class="footer-date" id="todayDate"></div>
+        <div class="sign-block">
+            <span class="sign-label">신청자</span>
+            <div class="sign-line">
+                <input type="text">
+            </div>
+            <span style="font-size:13px;">(인)</span>
+        </div>
+        <div class="footer-recipient">플러스엑스 주식회사 대표이사 귀하</div>
+    </div>
+</div>
+
+<script>
+    function toggleRow(checkbox) {
+        const row = checkbox.closest('tr');
+        const elements = row.querySelectorAll('input:not(.change-check), select, textarea');
+        const cells = row.querySelectorAll('td:not(:first-child)');
+        if (checkbox.checked) {
+            elements.forEach(el => el.disabled = false);
+            cells.forEach(c => c.classList.remove('row-disabled'));
+        } else {
+            elements.forEach(el => { el.disabled = true; el.value = ''; });
+            cells.forEach(c => c.classList.add('row-disabled'));
+        }
+    }
+
+    (function () {
+        const t = new Date();
+        document.getElementById('todayDate').textContent = `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
+    })();
+
+    function autoFormatDate(el) {
+        const v = el.value.replace(/[^0-9]/g, '');
+        if (v.length === 8) el.value = v.slice(0,4) + '-' + v.slice(4,6) + '-' + v.slice(6,8);
+    }
+
+    function handleNumInput(el) {
+        let v = el.value.replace(/,/g, '');
+        if (v !== '' && !isNaN(v)) el.value = Number(v).toLocaleString('ko-KR');
+    }
+
+    function calculateTenure() {
+        const joinVal = document.getElementById('joinDate').value;
+        if (!joinVal || joinVal.length < 10) return;
+        const start = new Date(joinVal);
+        let diff = new Date() - start;
+        if (document.getElementById('hasLeave').checked) {
+            const ls = new Date(document.getElementById('leaveStart').value);
+            const le = new Date(document.getElementById('leaveEnd').value);
+            if (!isNaN(ls) && !isNaN(le) && le > ls) diff -= (le - ls);
+        }
+        const years = Math.floor(diff / (1000*60*60*24*365.25));
+        const months = Math.floor((diff % (1000*60*60*24*365.25)) / (1000*60*60*24*30.44));
+        document.getElementById('tenureResult').textContent = `${years}년 ${months}개월`;
+    }
+
+    function toggleLeave() {
+        const on = document.getElementById('hasLeave').checked;
+        document.getElementById('leaveStart').disabled = !on;
+        document.getElementById('leaveEnd').disabled = !on;
+        calculateTenure();
+    }
+</script>
+</body>
+</html>
