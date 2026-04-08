@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전세자금대출 이자지원 신청 세트</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+        /* --- 공통 레이아웃 스타일 --- */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: #d8d8d8;
+            padding: 32px 0 48px;
+            color: #1a1a1a;
+        }
+
+        /* --- 뒤로가기 및 인쇄 버튼 영역 --- */
+        .no-print.back-nav-container {
+            width: 210mm;
+            margin: 0 auto 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 18px;
+            background-color: #ffffff;
+            color: #555;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid #ccc;
+        }
+        .back-btn:hover {
+            background-color: #ff6b00;
+            color: #fff;
+            border-color: #ff6b00;
+        }
+        .back-btn svg { margin-right: 8px; }
+
+        .pdf-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 3px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .pdf-btn:hover { background: #333; }
+
+        /* --- A4 페이지 스타일 --- */
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto 30px; /* 웹에서 볼 때 페이지 간 간격 */
+            background: #fff;
+            padding: 18mm 15mm;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- 공통 서식 스타일 --- */
+        .doc-meta { font-size: 10px; color: #888; letter-spacing: 0.05em; margin-bottom: 6px; }
+        .doc-title { text-align: center; font-size: 21px; font-weight: 700; border-bottom: 2.5px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 3px; }
+        .doc-subtitle { text-align: center; font-size: 11px; color: #888; margin-bottom: 14px; }
+        .sec-title { font-size: 11px; font-weight: 700; border-bottom: 1.5px solid #1a1a1a; padding-bottom: 4px; margin: 12px 0 6px; display: flex; align-items: center; gap: 6px; }
+        .sec-title::before { content: ''; width: 3px; height: 12px; background: #1a1a1a; border-radius: 1px; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 12px; }
+        th, td { border: 1px solid #d0d0d0; padding: 6px 10px; vertical-align: middle; }
+        th { background: #f5f5f5; font-weight: 600; font-size: 11px; color: #444; text-align: center; }
+
+        input[type="text"], select, textarea { width: 100%; border: none; font-family: inherit; font-size: 12px; outline: none; background: transparent; }
+        .num-input { text-align: right; }
+        .notice-box { font-size: 10.5px; line-height: 1.7; border: 1px solid #d0d0d0; background: #fafafa; padding: 10px; color: #444; margin-bottom: 8px; }
+
+        /* 동의서 전용 스타일 */
+        .consent-box { border: 1px solid #d0d0d0; background: #fafafa; padding: 18px 20px; margin-bottom: 14px; }
+        .consent-intro { font-size: 12px; color: #555; margin-bottom: 16px; }
+        .consent-list { list-style: none; }
+        .consent-list li { display: flex; gap: 10px; font-size: 12.5px; line-height: 1.75; padding: 10px 0; border-bottom: 1px solid #e8e8e8; }
+        .consent-num { flex-shrink: 0; width: 18px; height: 18px; background: #1a1a1a; color: #fff; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+        .consent-confirm { font-size: 12.5px; font-weight: 600; text-align: center; padding: 12px; border: 1px solid #1a1a1a; margin-bottom: 14px; }
+
+        .footer { margin-top: auto; padding-bottom: 15px; text-align: center; }
+        .footer-date { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
+        .sign-block { display: flex; justify-content: center; align-items: flex-end; margin-bottom: 10px; }
+        .sign-line { width: 190px; border-bottom: 1px solid #1a1a1a; margin: 0 8px; }
+        .sign-line input { border: none; text-align: center; font-size: 14px; font-weight: 600; }
+
+        /* --- 인쇄 설정 --- */
+        @media print {
+            body { background: none; padding: 0; }
+            .no-print { display: none; }
+            .page { 
+                margin: 0; box-shadow: none; width: 210mm; height: 297mm; 
+                page-break-after: always; /* 페이지 강제 넘김 */
+            }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print back-nav-container">
+    <a href="index.html" class="back-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        목록으로 돌아가기
+    </a>
+    <button class="pdf-btn" onclick="window.print()">🖨 전체 세트(2장) PDF 저장 / 인쇄</button>
+</div>
+
+<div class="page">
+    <div class="doc-meta">[별지1]&nbsp;&nbsp;PLUSX Corp. — 복지지원서류</div>
+    <div class="doc-title">전세자금대출 이자지원 신청서</div>
+
+    <div class="sec-title">인적사항</div>
+    <table>
+        <tr>
+            <th style="width:100px;">성명 / 소속</th>
+            <td><input type="text" placeholder="성명 / 팀명 입력"></td>
+            <th style="width:100px;">주민등록번호</th>
+            <td><input type="text" placeholder="000000-0000000" maxlength="14"></td>
+        </tr>
+        <tr>
+            <th>입사일자</th>
+            <td><input type="text" class="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this); calculateAllTenure();"></td>
+            <th>주소</th>
+            <td style="padding: 0 10px; height: 46px;">
+                <textarea placeholder="거주지 주소 입력" style="height: 38px; line-height: 1.5; padding-top: 5px;"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <th>휴직 여부</th>
+            <td colspan="3">
+                <input type="checkbox" class="hasLeave" onchange="toggleLeave(this)">
+                <label style="font-size:11px; cursor:pointer;">휴직 기간 있음</label>
+                &nbsp;
+                ( <input type="text" class="leaveStart" style="width:90px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateAllTenure();">
+                ~
+                <input type="text" class="leaveEnd" style="width:90px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateAllTenure();"> )
+            </td>
+        </tr>
+        <tr>
+            <th>실 근속연수</th>
+            <td colspan="3" class="tenureResult" style="background:#fafafa; font-size:11px; color:#666;">입사일자를 입력하면 자동 계산됩니다.</td>
+        </tr>
+    </table>
+
+    <div class="sec-title">신청내역</div>
+    <table>
+        <tr>
+            <th style="width:100px;">신청회차</th>
+            <td>
+                <select>
+                    <option value="1">1회차 (최대 2회)</option>
+                    <option value="2">2회차 (최대 2회)</option>
+                </select>
+            </td>
+            <th style="width:100px;">신청기간</th>
+            <td>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                    <span style="color:#888;">~</span>
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>총 지원 예상금액</th>
+            <td colspan="3">
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <input type="text" class="num-input" style="font-weight:700;" placeholder="0" oninput="handleNumInput(this)">
+                    <span style="font-weight:600;">원</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="sec-title">대출내역</div>
+    <table>
+        <tr>
+            <th style="width:100px;">대출금액</th>
+            <td colspan="3">
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <input type="text" placeholder="한글 금액 (예: 일억원)" style="flex:1; border-bottom:1px solid #eee;">
+                    <div style="display:flex; align-items:center; flex:1;">
+                        <span>(&nbsp;₩&nbsp;</span>
+                        <input type="text" placeholder="숫자 금액" class="num-input" style="flex:1; border-bottom:1px solid #eee;" oninput="handleNumInput(this)">
+                        <span>&nbsp;)</span>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>대출기관</th>
+            <td><input type="text" placeholder="우리은행 도산금융센터"></td>
+            <th style="width:100px;">대출실행일</th>
+            <td><input type="text" placeholder="YYYYMMDD" onblur="autoFormatDate(this)"></td>
+        </tr>
+        <tr>
+            <th>대출형식</th>
+            <td><input type="text" placeholder="예: 전세자금대출"></td>
+            <th>대출기간</th>
+            <td>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                    <span style="color:#888;">~</span>
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>대출이율</th>
+            <td><input type="text" placeholder="예: 3.5%"></td>
+            <th>상환방법</th>
+            <td>
+                <select>
+                    <option value="분할상환">분할상환</option>
+                    <option value="만기일시상환">만기일시상환</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>이자지원비율</th>
+            <td colspan="3">
+                <select style="width:150px;">
+                    <option value="60">60%</option>
+                    <option value="80">80%</option>
+                    <option value="100">100%</option>
+                </select>
+            </td>
+        </tr>
+    </table>
+
+    <div class="notice-box">
+        1. 전세계약서 | 2. 대출실행확인서 | 3. 이자상환명세서 | 4. 임금 외 수입 동의서 | 5. 주민등록등본
+    </div>
+
+    <div class="notice-box">
+        <b>[확인사항]</b><br>
+        상기 본인은 지원금을 부정수급할 경우 지원금의 5배를 반환하며 회사가 정하는 불이익을 감수할 것을 동의합니다.
+    </div>
+
+    <div class="footer">
+        <div class="footer-date todayDate"></div>
+        <div class="sign-block">
+            <span>근로자 성명 :</span>
+            <div class="sign-line"><input type="text" placeholder="성명 입력"></div>
+            <span>(인)</span>
+        </div>
+        <div class="footer-recipient">플러스엑스 주식회사 대표이사 귀하</div>
+    </div>
+</div>
+
+<div class="page">
+    <div class="doc-meta">[별지2]&nbsp;&nbsp;PLUSX Corp. — 복지지원서류</div>
+    <div class="doc-title">전세자금대출 이자지원 동의서</div>
+
+    <div class="sec-title">인적사항</div>
+    <table>
+        <tr>
+            <th style="width:100px;">성명 / 소속</th>
+            <td><input type="text" placeholder="성명 / 팀명 입력"></td>
+            <th style="width:100px;">주민등록번호</th>
+            <td><input type="text" placeholder="000000-0000000" maxlength="14"></td>
+        </tr>
+        <tr>
+            <th>입사일자</th>
+            <td><input type="text" class="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this); calculateAllTenure();"></td>
+            <th>주소</th>
+            <td style="padding: 0 10px; height: 46px;"><textarea placeholder="거주지 주소 입력" style="height: 38px; line-height: 1.5; padding-top: 5px;"></textarea></td>
+        </tr>
+        <tr>
+            <th>실 근속연수</th>
+            <td colspan="3" class="tenureResult" style="background:#fafafa;">입사일자를 입력하면 자동 계산됩니다.</td>
+        </tr>
+    </table>
+
+    <div class="sec-title">동의 항목</div>
+    <div class="consent-box">
+        <p class="consent-intro">플러스엑스 전세자금대출이자지원 신청함에 있어 아래 사항에 동의합니다.</p>
+        <ul class="consent-list">
+            <li><span class="consent-num">1</span><span>회사로부터 받은 지원금은 <strong>임금 외 수입</strong>으로 간주한다.</span></li>
+            <li><span class="consent-num">2</span><span>지원금으로 발생한 <strong>모든 제세공과금</strong>은 본인이 부담한다.</span></li>
+            <li><span class="consent-num">3</span><span>지원금은 추후 <strong>퇴직금 및 통상임금에 산입되지 않는다.</strong></span></li>
+        </ul>
+    </div>
+
+    <div class="consent-confirm">본인은 위 내용에 모두 동의합니다.</div>
+    <p style="text-align:center; font-size:12px; color:#555;">위와 같이 전세자금대출 이자지원을 신청하니 검토하여 주시기 바랍니다.</p>
+
+    <div class="footer">
+        <div class="footer-date todayDate"></div>
+        <div class="sign-block">
+            <span>신청자 :</span>
+            <div class="sign-line"><input type="text" placeholder="성명 기재 후 서명"></div>
+        </div>
+        <div class="footer-recipient">플러스엑스 주식회사 대표이사 귀하</div>
+    </div>
+</div>
+
+<script>
+    // 오늘 날짜 자동 입력 (모든 .todayDate 요소에 적용)
+    (function () {
+        const t = new Date();
+        const dateStr = `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
+        document.querySelectorAll('.todayDate').forEach(el => el.textContent = dateStr);
+    })();
+
+    // 날짜 형식 자동 변환
+    function autoFormatDate(el) {
+        const v = el.value.replace(/[^0-9]/g, '');
+        if (v.length === 8) el.value = v.slice(0,4) + '-' + v.slice(4,6) + '-' + v.slice(6,8);
+    }
+
+    // 숫자 콤마 표시
+    function handleNumInput(el) {
+        let v = el.value.replace(/,/g, '');
+        if (v !== "") el.value = Number(v).toLocaleString('ko-KR');
+    }
+
+    // 근속연수 자동 계산 (페이지 내 모든 근속연수 칸 동시 업데이트)
+    function calculateAllTenure() {
+        const joinDateEl = document.querySelector('.joinDate');
+        const joinVal = joinDateEl.value;
+        if (!joinVal || joinVal.length < 10) return;
+        
+        const start = new Date(joinVal);
+        let diff = new Date() - start;
+        
+        // 휴직 체크 (첫 번째 페이지 기준)
+        const hasLeave = document.querySelector('.hasLeave').checked;
+        if (hasLeave) {
+            const ls = new Date(document.querySelector('.leaveStart').value);
+            const le = new Date(document.querySelector('.leaveEnd').value);
+            if (!isNaN(ls) && !isNaN(le) && le > ls) diff -= (le - ls);
+        }
+        
+        const years = Math.floor(diff / (1000*60*60*24*365.25));
+        const months = Math.floor((diff % (1000*60*60*24*365.25)) / (1000*60*60*24*30.44));
+        const resultStr = `${years}년 ${months}개월`;
+        
+        document.querySelectorAll('.tenureResult').forEach(el => el.textContent = resultStr);
+    }
+
+    function toggleLeave(el) {
+        const page = el.closest('.page');
+        const on = el.checked;
+        page.querySelector('.leaveStart').disabled = !on;
+        page.querySelector('.leaveEnd').disabled = !on;
+        calculateAllTenure();
+    }
+</script>
+</body>
+</html>
