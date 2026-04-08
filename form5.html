@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>경조사비 신청서</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+        /* --- 상단 버튼 영역 (인쇄 시 숨김) --- */
+        .no-print-area {
+            width: 210mm;
+            margin: 0 auto 12px;
+            display: flex;
+            justify-content: space-between; /* 왼쪽 끝과 오른쪽 끝으로 버튼 분산 배치 */
+            align-items: center;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 9px 18px;
+            background-color: #ffffff;
+            color: #555;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            border: 1px solid #ccc;
+        }
+        .back-btn:hover {
+            background-color: #ff6b00;
+            color: #fff;
+            border-color: #ff6b00;
+        }
+        .back-btn svg { margin-right: 8px; }
+
+        .pdf-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 3px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: background 0.2s;
+        }
+        .pdf-btn:hover { background: #333; }
+
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: #d8d8d8;
+            padding: 32px 0 48px;
+            color: #1a1a1a;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 18mm 15mm;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+        }
+
+        .doc-meta { font-size: 10px; color: #888; margin-bottom: 6px; }
+        .doc-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2.5px solid #1a1a1a;
+        }
+
+        .sec-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin: 15px 0 8px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sec-title::before {
+            content: '';
+            width: 3px;
+            height: 12px;
+            background: #1a1a1a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 8px 12px;
+            vertical-align: middle;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #444;
+            width: 120px;
+            text-align: center;
+        }
+
+        input[type="text"], select, textarea {
+            width: 100%;
+            border: none;
+            font-family: inherit;
+            font-size: 13px;
+            outline: none;
+            background: transparent;
+        }
+        
+        .auto-fill { background: #fafafa; color: #666; font-weight: 500; }
+        .disabled-cell { background: #eee !important; color: #999; }
+
+        /* 하단 스타일 수정 (크기 축소 및 간격 조정) */
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding-bottom: 15mm;
+        }
+        .footer-date { 
+            font-size: 14px; 
+            font-weight: 600; 
+            margin-bottom: 12px; 
+            letter-spacing: 0.04em;
+        }
+        .sign-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        .sign-label { font-size: 13px; font-weight: 500; margin-right: 8px; }
+        .sign-line {
+            border-bottom: 1px solid #1a1a1a;
+            width: 190px;
+            display: flex;
+            justify-content: center;
+            margin-right: 8px;
+        }
+        .sign-line input { text-align: center; font-size: 14px; font-weight: 600; }
+        .footer-recipient { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #1a1a1a;
+            letter-spacing: 0.02em;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .no-print-area { display: none; }
+            .page { margin: 0; box-shadow: none; width: 100%; height: 100%; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print-area">
+    <a href="index.html" class="back-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        목록으로 돌아가기
+    </a>
+    <button class="pdf-btn" onclick="window.print()">🖨 PDF 저장 / 인쇄</button>
+</div>
+
+<div class="page">
+    <div class="doc-meta">PLUSX Corp. — 복지지원서류</div>
+    <div class="doc-title">경조사비 신청서</div>
+
+    <div class="sec-title">인적사항</div>
+    <table>
+        <tr>
+            <th>성명 / 소속</th>
+            <td><input type="text" placeholder="이름 / 팀명 입력"></td>
+            <th>입사일자</th>
+            <td><input type="text" id="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this);"></td>
+        </tr>
+        <tr>
+            <th>입금 계좌번호</th>
+            <td colspan="3"><input type="text" placeholder="은행명 / 계좌번호 (급여계좌)"></td>
+        </tr>
+    </table>
+
+    <div class="sec-title">경조 상세내역</div>
+    <table>
+        <tr>
+            <th>경조구분</th>
+            <td>
+                <select id="eventMain" onchange="updateSubOptions()">
+                    <option value="">선택하세요</option>
+                    <option value="결혼">결혼</option>
+                    <option value="출산">출산</option>
+                    <option value="사망">사망</option>
+                </select>
+            </td>
+            <th>경조대상</th>
+            <td>
+                <select id="eventTarget" onchange="updateDetails()">
+                    <option value="">구분을 먼저 선택하세요</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <th>경조금</th>
+            <td id="moneyCell" class="auto-fill">-</td>
+            <th>경조휴가</th>
+            <td id="leaveCell" class="auto-fill">-</td>
+        </tr>
+        <tr>
+            <th>제출서류</th>
+            <td colspan="3" id="docCell" class="auto-fill">-</td>
+        </tr>
+        <tr>
+            <th>경조일자</th>
+            <td colspan="3"><input type="text" placeholder="YYYYMMDD" onblur="autoFormatDate(this)"></td>
+        </tr>
+        <tr>
+            <th>비고</th>
+            <td colspan="3"><input type="text" placeholder="기타 특이사항 입력"></td>
+        </tr>
+    </table>
+
+    <div class="footer">
+        <div class="footer-date" id="todayDate"></div>
+        <div class="sign-row">
+            <span class="sign-label">신청자</span>
+            <div class="sign-line">
+                <input type="text">
+            </div>
+            <span style="font-size:13px;"></span>
+        </div>
+        <div class="footer-recipient">플러스엑스 주식회사 대표이사 귀하</div>
+    </div>
+</div>
+
+<script>
+    const data = {
+        "결혼": {
+            "본인": ["100만원", "5일(휴일제외)", "경조사비신청서, 청첩장"],
+            "자녀": ["50만원", "1일(휴일포함)", "경조사비신청서, 청첩장, 가족관계증명서"],
+            "형제자매": ["10만원", "1일(휴일포함)", "경조사비신청서, 청첩장, 가족관계증명서"]
+        },
+        "출산": {
+            "본인": ["30만원", "90일(휴일포함)", "경조사비신청서, 출산휴가신청서, 출생신고서"],
+            "배우자": ["30만원", "20일(휴일제외)", "경조사비신청서, 출산휴가신청서, 출생신고서"]
+        },
+        "사망": {
+            "본인": ["500만원", "해당없음", "해당없음"],
+            "배우자": ["100만원", "5일(휴일포함)", "부고장(EX팀 링크 전송)"],
+            "본인 부모": ["100만원", "5일(휴일포함)", "부고장(EX팀 링크 전송)"],
+            "배우자 부모": ["50만원", "5일(휴일포함)", "부고장(EX팀 링크 전송)"],
+            "자녀": ["100만원", "5일(휴일포함)", "부고장(EX팀 링크 전송)"],
+            "본인/배우자 조부모": ["30만원", "5일(휴일포함)", "부고장(EX팀 링크 전송)"],
+            "본인/배우자 형제자매": ["30만원", "5일(휴일포함)", "부고장(EX팀 링크 전송)"]
+        }
+    };
+
+    function updateSubOptions() {
+        const main = document.getElementById('eventMain').value;
+        const targetSelect = document.getElementById('eventTarget');
+        targetSelect.innerHTML = '<option value="">선택하세요</option>';
+        
+        if(main) {
+            Object.keys(data[main]).forEach(target => {
+                const opt = document.createElement('option');
+                opt.value = target;
+                opt.textContent = target;
+                targetSelect.appendChild(opt);
+            });
+        }
+        updateDetails();
+    }
+
+    function updateDetails() {
+        const main = document.getElementById('eventMain').value;
+        const target = document.getElementById('eventTarget').value;
+        const moneyCell = document.getElementById('moneyCell');
+        const leaveCell = document.getElementById('leaveCell');
+        const docCell = document.getElementById('docCell');
+
+        if(main && target) {
+            const [money, leave, docs] = data[main][target];
+            moneyCell.textContent = money;
+            leaveCell.textContent = leave;
+            docCell.textContent = docs;
+
+            if(main === "사망" && target === "본인") {
+                leaveCell.classList.add('disabled-cell');
+                docCell.classList.add('disabled-cell');
+            } else {
+                leaveCell.classList.remove('disabled-cell');
+                docCell.classList.remove('disabled-cell');
+            }
+        } else {
+            moneyCell.textContent = "-";
+            leaveCell.textContent = "-";
+            docCell.textContent = "-";
+            leaveCell.classList.remove('disabled-cell');
+            docCell.classList.remove('disabled-cell');
+        }
+    }
+
+    function autoFormatDate(el) {
+        const v = el.value.replace(/[^0-9]/g, '');
+        if (v.length === 8) el.value = v.slice(0,4) + '-' + v.slice(4,6) + '-' + v.slice(6,8);
+    }
+
+    (function () {
+        const t = new Date();
+        document.getElementById('todayDate').textContent = `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
+    })();
+</script>
+
+</body>
+</html>
