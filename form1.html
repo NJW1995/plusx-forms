@@ -61,9 +61,9 @@
         .page {
             width: 210mm;
             height: 297mm;
-            margin: 0 auto 30px; /* 웹에서 볼 때 페이지 간 간격 */
+            margin: 0 auto 30px;
             background: #fff;
-            padding: 18mm 15mm;
+            padding: 15mm 15mm; /* 상하 여백 약간 조정 */
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 24px rgba(0,0,0,0.18);
@@ -74,41 +74,51 @@
         /* --- 공통 서식 스타일 --- */
         .doc-meta { font-size: 10px; color: #888; letter-spacing: 0.05em; margin-bottom: 6px; }
         .doc-title { text-align: center; font-size: 21px; font-weight: 700; border-bottom: 2.5px solid #1a1a1a; padding-bottom: 10px; margin-bottom: 3px; }
-        .doc-subtitle { text-align: center; font-size: 11px; color: #888; margin-bottom: 14px; }
-        .sec-title { font-size: 11px; font-weight: 700; border-bottom: 1.5px solid #1a1a1a; padding-bottom: 4px; margin: 12px 0 6px; display: flex; align-items: center; gap: 6px; }
+        .doc-subtitle { text-align: center; font-size: 11px; color: #888; margin-bottom: 10px; }
+        .sec-title { font-size: 11px; font-weight: 700; border-bottom: 1.5px solid #1a1a1a; padding-bottom: 4px; margin: 10px 0 5px; display: flex; align-items: center; gap: 6px; }
         .sec-title::before { content: ''; width: 3px; height: 12px; background: #1a1a1a; border-radius: 1px; }
 
         table { width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 12px; }
-        th, td { border: 1px solid #d0d0d0; padding: 6px 10px; vertical-align: middle; }
+        th, td { border: 1px solid #d0d0d0; padding: 5px 10px; vertical-align: middle; }
         th { background: #f5f5f5; font-weight: 600; font-size: 11px; color: #444; text-align: center; }
 
         input[type="text"], select, textarea { width: 100%; border: none; font-family: inherit; font-size: 12px; outline: none; background: transparent; }
         .num-input { text-align: right; }
-        .notice-box { font-size: 10.5px; line-height: 1.7; border: 1px solid #d0d0d0; background: #fafafa; padding: 10px; color: #444; margin-bottom: 8px; }
+        .notice-box { font-size: 10.5px; line-height: 1.6; border: 1px solid #d0d0d0; background: #fafafa; padding: 8px 10px; color: #444; margin-bottom: 6px; }
 
         /* 동의서 전용 스타일 */
-        .consent-box { border: 1px solid #d0d0d0; background: #fafafa; padding: 18px 20px; margin-bottom: 14px; }
-        .consent-intro { font-size: 12px; color: #555; margin-bottom: 16px; }
+        .consent-box { border: 1px solid #d0d0d0; background: #fafafa; padding: 15px 20px; margin-bottom: 12px; }
+        .consent-intro { font-size: 12px; color: #555; margin-bottom: 12px; }
         .consent-list { list-style: none; }
-        .consent-list li { display: flex; gap: 10px; font-size: 12.5px; line-height: 1.75; padding: 10px 0; border-bottom: 1px solid #e8e8e8; }
+        .consent-list li { display: flex; gap: 10px; font-size: 12.5px; line-height: 1.7; padding: 8px 0; border-bottom: 1px solid #e8e8e8; }
         .consent-num { flex-shrink: 0; width: 18px; height: 18px; background: #1a1a1a; color: #fff; border-radius: 50%; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
-        .consent-confirm { font-size: 12.5px; font-weight: 600; text-align: center; padding: 12px; border: 1px solid #1a1a1a; margin-bottom: 14px; }
+        .consent-confirm { font-size: 12.5px; font-weight: 600; text-align: center; padding: 10px; border: 1px solid #1a1a1a; margin-bottom: 12px; }
 
-        .footer { margin-top: auto; padding-bottom: 15px; text-align: center; }
-        .footer-date { font-size: 14px; font-weight: 600; margin-bottom: 12px; }
-        .sign-block { display: flex; justify-content: center; align-items: flex-end; margin-bottom: 10px; }
+        .footer { margin-top: auto; padding-bottom: 10px; text-align: center; }
+        .footer-date { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+        .sign-block { display: flex; justify-content: center; align-items: flex-end; margin-bottom: 8px; }
         .sign-line { width: 190px; border-bottom: 1px solid #1a1a1a; margin: 0 8px; }
         .sign-line input { border: none; text-align: center; font-size: 14px; font-weight: 600; }
+        .footer-recipient { font-size: 13px; font-weight: 600; }
 
-        /* --- 인쇄 설정 --- */
+        /* --- 인쇄 설정 (잘림 방지 핵심) --- */
         @media print {
-            body { background: none; padding: 0; }
-            .no-print { display: none; }
+            body { background: none; padding: 0; margin: 0; }
+            .no-print, .no-print-area, .back-nav-container { display: none !important; }
             .page { 
-                margin: 0; box-shadow: none; width: 210mm; height: 297mm; 
-                page-break-after: always; /* 페이지 강제 넘김 */
+                margin: 0; 
+                box-shadow: none; 
+                width: 210mm; 
+                height: 296mm; /* 297에서 1mm 줄여 안전마진 확보 */
+                page-break-after: always; 
+                overflow: visible; /* 인쇄 시 잘림 방지 */
             }
-            @page { size: A4; margin: 0; }
+            @page { 
+                size: A4; 
+                margin: 0; /* 브라우저 기본 여백 제거 */
+            }
+            /* 인쇄 시 입력창 배경 제거 및 가독성 향상 */
+            input::placeholder, textarea::placeholder { color: transparent; }
         }
     </style>
 </head>
@@ -313,7 +323,7 @@
 </div>
 
 <script>
-    // 오늘 날짜 자동 입력 (모든 .todayDate 요소에 적용)
+    // 오늘 날짜 자동 입력
     (function () {
         const t = new Date();
         const dateStr = `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
@@ -332,7 +342,7 @@
         if (v !== "") el.value = Number(v).toLocaleString('ko-KR');
     }
 
-    // 근속연수 자동 계산 (페이지 내 모든 근속연수 칸 동시 업데이트)
+    // 근속연수 자동 계산
     function calculateAllTenure() {
         const joinDateEl = document.querySelector('.joinDate');
         const joinVal = joinDateEl.value;
@@ -341,9 +351,8 @@
         const start = new Date(joinVal);
         let diff = new Date() - start;
         
-        // 휴직 체크 (첫 번째 페이지 기준)
-        const hasLeave = document.querySelector('.hasLeave').checked;
-        if (hasLeave) {
+        const hasLeaveEl = document.querySelector('.hasLeave');
+        if (hasLeaveEl && hasLeaveEl.checked) {
             const ls = new Date(document.querySelector('.leaveStart').value);
             const le = new Date(document.querySelector('.leaveEnd').value);
             if (!isNaN(ls) && !isNaN(le) && le > ls) diff -= (le - ls);
@@ -357,10 +366,10 @@
     }
 
     function toggleLeave(el) {
-        const page = el.closest('.page');
         const on = el.checked;
-        page.querySelector('.leaveStart').disabled = !on;
-        page.querySelector('.leaveEnd').disabled = !on;
+        document.querySelectorAll('.leaveStart, .leaveEnd').forEach(input => {
+            input.disabled = !on;
+        });
         calculateAllTenure();
     }
 </script>
