@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>전세자금대출 이자지원 신청서(분기)</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            background: #d8d8d8;
+            padding: 32px 0 48px;
+            color: #1a1a1a;
+        }
+
+        /* 인쇄 버튼 영역 */
+        .no-print {
+            width: 210mm;
+            margin: 0 auto 12px;
+            text-align: right;
+        }
+        .pdf-btn {
+            background: #1a1a1a;
+            color: #fff;
+            border: none;
+            padding: 9px 22px;
+            border-radius: 3px;
+            font-family: 'Noto Sans KR', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            letter-spacing: 0.02em;
+            transition: background 0.2s;
+        }
+        .pdf-btn:hover { background: #333; }
+
+        /* A4 컨테이너 */
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 0 auto;
+            background: #fff;
+            padding: 22mm 15mm 15mm; /* 상단 여백을 22mm로 늘려 제목쪽 답답함 해소 */
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 헤더 */
+        .doc-meta {
+            font-size: 10px;
+            color: #888;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+        .doc-title {
+            text-align: center;
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            margin-bottom: 3px;
+            padding-bottom: 10px;
+            border-bottom: 2.5px solid #1a1a1a;
+        }
+        .doc-subtitle {
+            text-align: center;
+            font-size: 11px;
+            color: #888;
+            margin-bottom: 14px;
+            letter-spacing: 0.04em;
+        }
+
+        /* 섹션 타이틀 */
+        .sec-title {
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            padding-bottom: 4px;
+            border-bottom: 1.5px solid #1a1a1a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sec-title::before {
+            content: '';
+            display: inline-block;
+            width: 3px;
+            height: 12px;
+            background: #1a1a1a;
+            border-radius: 1px;
+            flex-shrink: 0;
+        }
+
+        /* 공통 테이블 */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 11px;
+            font-size: 12px;
+        }
+        th, td {
+            border: 1px solid #d0d0d0;
+            padding: 5px 8px;
+            vertical-align: middle;
+        }
+        th {
+            background: #f5f5f5;
+            font-weight: 600;
+            font-size: 11px;
+            color: #444;
+            white-space: nowrap;
+            text-align: center;
+            letter-spacing: 0.02em;
+        }
+        td { color: #1a1a1a; }
+
+        /* 입력 필드 공통 */
+        input[type="text"], select {
+            width: 100%;
+            border: none;
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            font-size: 12px;
+            outline: none;
+            background: transparent;
+            color: #1a1a1a;
+        }
+        input[type="text"]::placeholder { color: #bbb; font-size: 11px; }
+
+        /* 인적사항 테이블 */
+        .info-table th { width: 78px; }
+
+        /* 주소 textarea */
+        .address-textarea {
+            width: 100%;
+            border: none;
+            font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+            font-size: 12px;
+            outline: none;
+            background: transparent;
+            color: #1a1a1a;
+            resize: none;
+            line-height: 1.6;
+            height: 36px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        /* 이자계산 테이블 */
+        #interestTable tr td { text-align: center; }
+        .tfoot-sum td, .tfoot-sum th {
+            background: #f0f0f0;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .num-input { text-align: right; font-variant-numeric: tabular-nums; }
+
+        /* 공통 안내 박스 디자인 (확인사항, 첨부서류) */
+        .notice-box {
+            font-size: 10.5px;
+            line-height: 1.75;
+            border: 1px solid #d0d0d0;
+            background: #fafafa;
+            padding: 9px 11px;
+            color: #444;
+            word-break: keep-all;
+            margin-bottom: 8px; /* 박스 간 간격 */
+        }
+        .notice-box b { color: #1a1a1a; }
+
+        /* 서명란 */
+        .footer {
+            margin-top: 100px; /* 여백이 너무 넓지 않도록 적절한 고정값으로 변경 */
+            padding-top: 10px;
+        }
+        .footer-date {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            margin-bottom: 12px;
+            color: #1a1a1a;
+        }
+        .sign-block {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+            margin-bottom: 10px;
+        }
+        .sign-line {
+            width: 190px;
+            border-bottom: 1px solid #1a1a1a;
+            display: flex;
+            justify-content: center;
+            margin: 0 8px;
+        }
+        .sign-line input {
+            border: none;
+            outline: none;
+            width: 100%;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            background: transparent;
+        }
+        .footer-recipient {
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1a1a;
+        }
+
+        @media print {
+            body { background: none; padding: 0; }
+            .no-print { display: none; }
+            .page { margin: 0; box-shadow: none; width: 210mm; height: 297mm; }
+            @page { size: A4; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="no-print">
+    <button class="pdf-btn" onclick="window.print()">🖨 PDF 저장 / 인쇄</button>
+</div>
+
+<div class="page">
+
+    <div class="doc-meta">[별지4]&nbsp;&nbsp;PLUSX Corp. — 복지지원서류</div>
+    <div class="doc-title">전세자금대출 이자지원 신청서 (분기)</div>
+    <div class="doc-subtitle"> </div>
+
+    <div class="sec-title">인적사항</div>
+    <table class="info-table">
+        <tr>
+            <th>성명 / 소속</th>
+            <td><input type="text" placeholder="홍길동 / 개발팀"></td>
+            <th>주민등록번호</th>
+            <td><input type="text" placeholder="000000-0000000" maxlength="14"></td>
+        </tr>
+        <tr>
+            <th>입사일자</th>
+            <td><input type="text" id="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this); calculateTenure();"></td>
+            <th>주소</th>
+            <td style="vertical-align:top; padding-top:6px;"><textarea class="address-textarea" placeholder="거주지 주소 (상세주소 포함)"></textarea></td>
+        </tr>
+        <tr>
+            <th>휴직 여부</th>
+            <td colspan="3">
+                <input type="checkbox" id="hasLeave" onchange="toggleLeave()">
+                <label for="hasLeave" style="font-size:11px; cursor:pointer;">휴직 기간 있음</label>
+                &nbsp;
+                ( <input type="text" id="leaveStart" style="width:80px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateTenure();">
+                ~
+                <input type="text" id="leaveEnd" style="width:80px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateTenure();"> )
+            </td>
+        </tr>
+        <tr>
+            <th>실 근속연수</th>
+            <td colspan="3" id="tenureResult" style="background:#fafafa; font-size:11px; color:#666;">입사일자를 입력하면 자동 계산됩니다.</td>
+        </tr>
+    </table>
+
+    <div class="sec-title">신청내역</div>
+    <table>
+        <tr>
+            <th style="width:78px;">신청회차</th>
+            <td style="width:180px;">
+                <select style="border:none; background:transparent; font-size:12px;">
+                    <option value="1">1회차 (최대 2회)</option>
+                    <option value="2">2회차 (최대 2회)</option>
+                </select>
+            </td>
+            <th style="width:78px;">신청기간</th>
+            <td>
+                <div style="display:flex; align-items:center; gap:4px;">
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                    <span style="color:#888;">~</span>
+                    <input type="text" style="flex:1;" placeholder="YYYYMMDD" onblur="autoFormatDate(this)">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <th>지원 예상금액</th>
+            <td colspan="3">
+                <div style="display:flex; align-items:center; gap:5px;">
+                    <input type="text" class="num-input" style="font-weight:700;" placeholder="자동 계산됨" id="totalSupportInput">
+                    <span style="font-weight:600; font-size:12px;">원</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <div class="sec-title">대출내역 (이자계산)</div>
+    <div style="margin-bottom:8px; font-size:11px;">
+        신청 분기: 
+        <select id="quarterSelect" onchange="updateMonths()" style="width:auto; border:1px solid #ddd; padding:2px;">
+            <option value="1">1분기 (1~3월)</option>
+            <option value="2">2분기 (4~6월)</option>
+            <option value="3">3분기 (7~9월)</option>
+            <option value="4">4분기 (10~12월)</option>
+        </select>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <th style="width:15%;">해당 월</th>
+                <th style="width:30%;">이자금액 (원)</th>
+                <th style="width:25%;">지원비율</th>
+                <th style="width:30%;">지원금액 (원)</th>
+            </tr>
+        </thead>
+        <tbody id="interestTable"></tbody>
+        <tfoot>
+            <tr class="tfoot-sum">
+                <th>합 계</th>
+                <td id="sumInterest" style="text-align:right;">0</td>
+                <td style="text-align:center; color:#888;">—</td>
+                <td id="sumSupport" style="text-align:right;">0</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="notice-box">
+        <b>[확인사항]</b>&nbsp;
+        상기 본인은 해당 지원금액을 회사가 정한 취지와 다른 용도로 부정 수급한 내용이 발견되는 즉시 그동안 지원받은 금액에 대해 회사가 정한 배수로 반환하며, 회사가 정하는 그 어떤 불이익도 감수하겠습니다. 이와 관련된 사항을 모두 확인하였고 동의합니다.
+    </div>
+
+    <div class="notice-box">
+        <b>[첨부서류]</b>&nbsp; 이자납입내역서
+    </div>
+
+    <div class="footer">
+        <div class="footer-date" id="todayDate"></div>
+        <div class="sign-block">
+            <span style="font-size:13px;">근로자 성명 :</span>
+            <div class="sign-line">
+                <input type="text" placeholder="성명 입력">
+            </div>
+            <span style="font-size:13px;"></span>
+        </div>
+        <div class="footer-recipient">플러스엑스 주식회사 대표이사 귀하</div>
+    </div>
+
+</div>
+
+<script>
+    (function () {
+        const t = new Date();
+        document.getElementById('todayDate').textContent = `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
+    })();
+
+    function autoFormatDate(el) {
+        const v = el.value.replace(/[^0-9]/g, '');
+        if (v.length === 8) el.value = v.slice(0,4) + '-' + v.slice(4,6) + '-' + v.slice(6,8);
+    }
+
+    function fmtN(n) { return Number(n).toLocaleString('ko-KR'); }
+
+    function calculateTenure() {
+        const joinVal = document.getElementById('joinDate').value;
+        if (!joinVal || joinVal.length < 10) return;
+        const start = new Date(joinVal);
+        let diff = new Date() - start;
+        if (document.getElementById('hasLeave').checked) {
+            const ls = new Date(document.getElementById('leaveStart').value);
+            const le = new Date(document.getElementById('leaveEnd').value);
+            if (!isNaN(ls) && !isNaN(le) && le > ls) diff -= (le - ls);
+        }
+        const years = Math.floor(diff / (1000*60*60*24*365.25));
+        const months = Math.floor((diff % (1000*60*60*24*365.25)) / (1000*60*60*24*30.44));
+        document.getElementById('tenureResult').textContent = `${years}년 ${months}개월`;
+    }
+
+    function toggleLeave() {
+        const on = document.getElementById('hasLeave').checked;
+        document.getElementById('leaveStart').disabled = !on;
+        document.getElementById('leaveEnd').disabled = !on;
+        calculateTenure();
+    }
+
+    function updateMonths() {
+        const q = document.getElementById('quarterSelect').value;
+        const map = { "1":[1,2,3], "2":[4,5,6], "3":[7,8,9], "4":[10,11,12] };
+        const tbody = document.getElementById('interestTable');
+        tbody.innerHTML = '';
+        map[q].forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${m}월</td>
+                <td><input type="text" class="amt-input num-input" oninput="handleInput(this)" value="0"></td>
+                <td>
+                    <select class="rate-select" onchange="calcRow()">
+                        <option value="0.6">60%</option>
+                        <option value="0.8">80%</option>
+                        <option value="1.0">100%</option>
+                    </select>
+                </td>
+                <td class="res-cell" style="text-align:right;">0</td>`;
+            tbody.appendChild(tr);
+        });
+        calcRow();
+    }
+
+    function handleInput(el) {
+        let v = el.value.replace(/,/g, '');
+        el.value = fmtN(parseInt(v || 0, 10));
+        calcRow();
+    }
+
+    function calcRow() {
+        const amts = document.querySelectorAll('.amt-input');
+        const rates = document.querySelectorAll('.rate-select');
+        const ress = document.querySelectorAll('.res-cell');
+        let tAmt = 0, tSup = 0;
+        amts.forEach((a, i) => {
+            const v = parseInt(a.value.replace(/,/g,''), 10) || 0;
+            const r = parseFloat(rates[i].value);
+            const sup = Math.floor(v * r);
+            ress[i].textContent = fmtN(sup);
+            tAmt += v; tSup += sup;
+        });
+        document.getElementById('sumInterest').textContent = fmtN(tAmt);
+        document.getElementById('sumSupport').textContent = fmtN(tSup);
+        document.getElementById('totalSupportInput').value = fmtN(tSup);
+    }
+
+    window.onload = updateMonths;
+</script>
+</body>
+</html>
