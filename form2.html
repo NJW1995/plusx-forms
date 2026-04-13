@@ -44,10 +44,6 @@
             color: #1a1a1a;
         }
 
-        .no-print {
-            /* 헤더 영역을 버튼 컨테이너로 활용 */
-        }
-
         .pdf-btn {
             background: #1a1a1a;
             color: #fff;
@@ -100,7 +96,19 @@
         .num-input { text-align: right; }
         .notice-box { font-size: 10.5px; line-height: 1.75; border: 1px solid #d0d0d0; background: #fafafa; padding: 9px 11px; color: #444; margin-bottom: 8px; }
 
-        .footer { margin-top: auto; padding-bottom: 20px; } /* 서명란을 아래로 밀기 */
+        /* 지원비율 변경 알림 스타일 */
+        #ratioAlert {
+            display: none;
+            color: #d93025;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            padding: 8px;
+            border: 1px dashed #d93025;
+            background: #fff8f7;
+        }
+
+        .footer { margin-top: auto; padding-bottom: 20px; }
         .footer-date { text-align: center; font-size: 14px; font-weight: 600; margin-bottom: 12px; }
         .sign-block { display: flex; justify-content: center; align-items: flex-end; margin-bottom: 10px; }
         .sign-line { width: 190px; border-bottom: 1px solid #1a1a1a; margin: 0 8px; }
@@ -109,7 +117,7 @@
 
         @media print {
             body { background: none; padding: 0; }
-            .no-print { display: none; }
+            .no-print, #ratioAlert { display: none !important; }
             .page { margin: 0; box-shadow: none; width: 210mm; height: 297mm; }
             @page { size: A4; margin: 0; }
         }
@@ -140,7 +148,7 @@
         </tr>
         <tr>
             <th>입사일자</th>
-            <td><input type="text" id="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this); calculateTenure();"></td>
+            <td><input type="text" id="joinDate" placeholder="YYYYMMDD" onblur="autoFormatDate(this); updateMonths();"></td>
             <th>주소</th>
             <td style="vertical-align:top; padding-top:6px;"><textarea class="address-textarea" placeholder="거주지 주소 (상세주소 포함)"></textarea></td>
         </tr>
@@ -150,13 +158,13 @@
                 <input type="checkbox" id="hasLeave" onchange="toggleLeave()">
                 <label for="hasLeave" style="font-size:11px; cursor:pointer;">휴직 기간 있음</label>
                 &nbsp;
-                ( <input type="text" id="leaveStart" style="width:80px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateTenure();">
+                ( <input type="text" id="leaveStart" style="width:80px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); updateMonths();">
                 ~
-                <input type="text" id="leaveEnd" style="width:80px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); calculateTenure();"> )
+                <input type="text" id="leaveEnd" style="width:80px;" placeholder="YYYYMMDD" disabled onblur="autoFormatDate(this); updateMonths();"> )
             </td>
         </tr>
         <tr>
-            <th>실 근속연수</th>
+            <th>현재 근속연수</th>
             <td colspan="3" id="tenureResult" style="background:#fafafa; font-size:11px; color:#666;">입사일자를 입력하면 자동 계산됩니다.</td>
         </tr>
     </table>
@@ -184,7 +192,7 @@
             <th>지원 예상금액</th>
             <td colspan="3">
                 <div style="display:flex; align-items:center; gap:5px;">
-                    <input type="text" class="num-input" style="font-weight:700;" placeholder="자동 계산됨" id="totalSupportInput">
+                    <input type="text" class="num-input" style="font-weight:700;" placeholder="자동 계산됨" id="totalSupportInput" readonly>
                     <span style="font-weight:600; font-size:12px;">원</span>
                 </div>
             </td>
@@ -192,21 +200,30 @@
     </table>
 
     <div class="sec-title">대출내역 (이자계산)</div>
-    <div style="margin-bottom:8px; font-size:11px;">
-        신청 분기: 
-        <select id="quarterSelect" onchange="updateMonths()" style="width:auto; border:1px solid #ddd; padding:2px;">
-            <option value="1">1분기 (1~3월)</option>
-            <option value="2">2분기 (4~6월)</option>
-            <option value="3">3분기 (7~9월)</option>
-            <option value="4">4분기 (10~12월)</option>
-        </select>
+    <div style="margin-bottom:8px; font-size:11px; display: flex; gap: 15px; align-items: center;">
+        <div>
+            신청연도: 
+            <select id="yearSelect" onchange="updateMonths()" style="width:auto; border:1px solid #ddd; padding:2px;"></select>
+        </div>
+        <div>
+            신청분기: 
+            <select id="quarterSelect" onchange="updateMonths()" style="width:auto; border:1px solid #ddd; padding:2px;">
+                <option value="1">1분기 (1~3월)</option>
+                <option value="2">2분기 (4~6월)</option>
+                <option value="3">3분기 (7~9월)</option>
+                <option value="4">4분기 (10~12월)</option>
+            </select>
+        </div>
     </div>
+
+    <div id="ratioAlert">⚠️ 이자신청서 상에 이자지원비율이 변경되었으니, 이자지원 변경 신청서를 추가로 작성하여 제출해주세요.</div>
+
     <table>
         <thead>
             <tr>
-                <th style="width:15%;">해당 월</th>
-                <th style="width:30%;">이자금액 (원)</th>
-                <th style="width:25%;">지원비율</th>
+                <th style="width:25%;">해당 연월</th>
+                <th style="width:25%;">이자금액 (원)</th>
+                <th style="width:20%;">지원비율</th>
                 <th style="width:30%;">지원금액 (원)</th>
             </tr>
         </thead>
@@ -242,7 +259,18 @@
 </div>
 
 <script>
-    (function () {
+    // 초기화: 연도 옵션 생성 (현재 기준 -1, 0, +1)
+    (function initYear() {
+        const currentYear = new Date().getFullYear();
+        const select = document.getElementById('yearSelect');
+        for (let y = currentYear - 1; y <= currentYear + 1; y++) {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y + '년';
+            if (y === currentYear) opt.selected = true;
+            select.appendChild(opt);
+        }
+        
         const t = new Date();
         document.getElementById('todayDate').textContent = `${t.getFullYear()}년 ${t.getMonth() + 1}월 ${t.getDate()}일`;
     })();
@@ -254,48 +282,78 @@
 
     function fmtN(n) { return Number(n).toLocaleString('ko-KR'); }
 
-    function calculateTenure() {
-        const joinVal = document.getElementById('joinDate').value;
-        if (!joinVal || joinVal.length < 10) return;
-        const start = new Date(joinVal);
-        let diff = new Date() - start;
+    // 특정 날짜 기준 근속일수(ms) 계산 함수
+    function getTenureMs(targetDate, joinDateStr) {
+        if (!joinDateStr || joinDateStr.length < 10) return 0;
+        const start = new Date(joinDateStr);
+        let diff = targetDate - start;
         if (document.getElementById('hasLeave').checked) {
             const ls = new Date(document.getElementById('leaveStart').value);
             const le = new Date(document.getElementById('leaveEnd').value);
-            if (!isNaN(ls) && !isNaN(le) && le > ls) diff -= (le - ls);
+            if (!isNaN(ls) && !isNaN(le) && le > ls) {
+                // 휴직 종료일이 타겟 날짜보다 이전인 경우만 차감
+                const actualLe = le > targetDate ? targetDate : le;
+                if (actualLe > ls) diff -= (actualLe - ls);
+            }
         }
-        const years = Math.floor(diff / (1000*60*60*24*365.25));
-        const months = Math.floor((diff % (1000*60*60*24*365.25)) / (1000*60*60*24*30.44));
-        document.getElementById('tenureResult').textContent = `${years}년 ${months}개월`;
+        return diff < 0 ? 0 : diff;
     }
 
     function toggleLeave() {
         const on = document.getElementById('hasLeave').checked;
         document.getElementById('leaveStart').disabled = !on;
         document.getElementById('leaveEnd').disabled = !on;
-        calculateTenure();
+        updateMonths();
     }
 
     function updateMonths() {
+        const year = document.getElementById('yearSelect').value;
         const q = document.getElementById('quarterSelect').value;
+        const joinDate = document.getElementById('joinDate').value;
         const map = { "1":[1,2,3], "2":[4,5,6], "3":[7,8,9], "4":[10,11,12] };
         const tbody = document.getElementById('interestTable');
+        
+        // 현재 근속연수 상단 표시 업데이트
+        const nowTenure = getTenureMs(new Date(), joinDate);
+        const y = Math.floor(nowTenure / (1000*60*60*24*365.25));
+        const m = Math.floor((nowTenure % (1000*60*60*24*365.25)) / (1000*60*60*24*30.44));
+        document.getElementById('tenureResult').textContent = joinDate ? `${y}년 ${m}개월` : "입사일자를 입력하면 자동 계산됩니다.";
+
         tbody.innerHTML = '';
-        map[q].forEach(m => {
+        let lastRate = null;
+        let isRateChanged = false;
+
+        map[q].forEach((month, idx) => {
+            // 해당 월의 1일 기준으로 근속연수 계산
+            const targetDate = new Date(year, month - 1, 1);
+            const ms = getTenureMs(targetDate, joinDate);
+            const years = ms / (1000*60*60*24*365.25);
+            
+            let rate = 0;
+            let rateText = "0%";
+            
+            if (joinDate) {
+                if (years >= 6) { rate = 1.0; rateText = "100%"; }
+                else if (years >= 4) { rate = 0.8; rateText = "80%"; }
+                else if (years >= 2) { rate = 0.6; rateText = "60%"; }
+                else { rate = 0; rateText = "대상아님"; }
+            }
+
+            if (idx > 0 && lastRate !== null && lastRate !== rate) isRateChanged = true;
+            lastRate = rate;
+
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${m}월</td>
+                <td style="text-align:center;">${year}년 ${month}월</td>
                 <td><input type="text" class="amt-input num-input" oninput="handleInput(this)" value="0"></td>
-                <td>
-                    <select class="rate-select" onchange="calcRow()">
-                        <option value="0.6">60%</option>
-                        <option value="0.8">80%</option>
-                        <option value="1.0">100%</option>
-                    </select>
+                <td style="text-align:center;">
+                    <span class="rate-val" data-rate="${rate}">${rateText}</span>
                 </td>
                 <td class="res-cell" style="text-align:right;">0</td>`;
             tbody.appendChild(tr);
         });
+
+        document.getElementById('ratioAlert').style.display = isRateChanged ? 'block' : 'none';
         calcRow();
     }
 
@@ -307,16 +365,18 @@
 
     function calcRow() {
         const amts = document.querySelectorAll('.amt-input');
-        const rates = document.querySelectorAll('.rate-select');
+        const rates = document.querySelectorAll('.rate-val');
         const ress = document.querySelectorAll('.res-cell');
         let tAmt = 0, tSup = 0;
+        
         amts.forEach((a, i) => {
             const v = parseInt(a.value.replace(/,/g,''), 10) || 0;
-            const r = parseFloat(rates[i].value);
+            const r = parseFloat(rates[i].getAttribute('data-rate')) || 0;
             const sup = Math.floor(v * r);
             ress[i].textContent = fmtN(sup);
             tAmt += v; tSup += sup;
         });
+        
         document.getElementById('sumInterest').textContent = fmtN(tAmt);
         document.getElementById('sumSupport').textContent = fmtN(tSup);
         document.getElementById('totalSupportInput').value = fmtN(tSup);
