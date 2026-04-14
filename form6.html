@@ -15,7 +15,13 @@
             color: #1a1a1a;
         }
 
-        /* 목록으로 돌아가기 버튼 수정 부분 */
+        /* 브라우저 기본 머리글/바닥글 숨기기 및 여백 설정 */
+        @page {
+            size: A4;
+            margin: 0; /* 브라우저가 강제로 넣는 여백 제거 */
+        }
+
+        /* 목록으로 돌아가기 버튼 */
         .no-print.back-nav-container {
             width: 210mm;
             margin: 0 auto 12px;
@@ -23,32 +29,28 @@
             justify-content: space-between;
             align-items: center;
         }
-            .back-btn {
+        .back-btn {
             display: inline-flex;
             align-items: center;
             padding: 10px 20px;
-            background-color: #ffffff; /* 배경 하얀색 */
-            color: #333333;           /* 글자색 검정 계열 */
+            background-color: #ffffff;
+            color: #333333;
             text-decoration: none;
             border-radius: 5px;
             font-size: 14px;
             font-weight: 600;
-            border: 1px solid #cccccc; /* 테두리 추가 */
+            border: 1px solid #cccccc;
             transition: all 0.3s ease;
             cursor: pointer;
         }
-
-        /* 마우스 올렸을 때 효과 */
         .back-btn:hover {
-            background-color: #ff5a00; /* 주황색 배경 */
-            color: #ffffff;           /* 글자색 하얀색 */
-            border-color: #ff5a00;    /* 테두리도 주황색 */
+            background-color: #ff5a00;
+            color: #ffffff;
+            border-color: #ff5a00;
         }
-
-        /* 사라진 화살표 다시 살리기 */
         .back-btn::before {
-            content: '←';            /* 화살표 기호 */
-            margin-right: 8px;       /* 글자와의 간격 */
+            content: '←';
+            margin-right: 8px;
             font-weight: bold;
         }
 
@@ -68,11 +70,12 @@
             height: 297mm;
             margin: 0 auto 25px;
             background: #fff;
-            padding: 10mm 16mm;
+            padding: 15mm 16mm; /* 인쇄 안정성을 위해 상단 여백 소폭 조정 */
             display: flex;
             flex-direction: column;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: relative;
+            overflow: hidden;
         }
 
         .doc-header {
@@ -161,10 +164,23 @@
             margin: 5px 0; text-align: justify;
         }
 
+        /* 인쇄 전용 스타일 최적화 */
         @media print {
-            body { background: none; padding: 0; }
+            html, body {
+                height: auto;
+                background: #fff;
+                margin: 0;
+                padding: 0;
+            }
             .no-print, .auto-info { display: none !important; }
-            .page { margin: 0; box-shadow: none; page-break-after: always; }
+            .page {
+                margin: 0 !important;
+                box-shadow: none !important;
+                page-break-after: always;
+                border: none !important;
+            }
+            /* 링크 옆에 URL이 자동으로 붙는 현상 방지 */
+            a[href]:after { content: none !important; }
         }
     </style>
 </head>
@@ -172,19 +188,17 @@
 
 <div class="no-print back-nav-container">
     <a href="index.html" class="back-btn">목록으로 돌아가기</a>
-    <button class="pdf-btn" onclick="window.print()">🖨 전체 세트(3장) PDF 저장 / 인쇄</button>
+    <button class="pdf-btn" onclick="window.print()">🖨 전체 세트(3장) 출력</button>
 </div>
 
 <div class="page">
     <div class="doc-header"><div class="doc-main-title">사직서</div></div>
-
     <div class="approval-area">
         <table class="approval-table">
             <tr><th>PM/조직장</th><th>대표이사</th><th>경영지원팀</th></tr>
             <tr><td class="sign-cell"></td><td class="sign-cell"></td><td class="sign-cell"></td></tr>
         </table>
     </div>
-
     <table class="info-table">
         <tr>
             <th>작성자 (소속/성명)</th>
@@ -221,12 +235,10 @@
             </td>
         </tr>
     </table>
-
     <div class="body-headline">
         본인은 <span class="sync-leave-date">0000년 00월 00일</span>자로 퇴직함에 있어,<br>
         아래와 같은 조항을 성실히 준수할 것을 서약합니다.
     </div>
-
     <ul class="clause-list">
         <li><span class="clause-num">1</span><span>상기 본인은 <input type="text" class="underline-input" style="width:220px;" placeholder="퇴사 사유 작성"> 로 인하여 <span class="sync-leave-date">0000년 00월 00일</span>부로 사직하고자 합니다.</span></li>
         <li><span class="clause-num">2</span><span>본인은 퇴직에 따른 사무 인수, 인계의 철저로 최종 퇴사 시까지 책임과 의무를 완수하고, 재직 시 업무상 제반 비밀사항을 타인에게 누설함이 귀사의 경영에 막대한 손해와 피해를 준다는 사실을 지각하고 일체 이를 누설하지 않겠습니다.</span></li>
@@ -237,12 +249,10 @@
             <span style="display:inline-block; margin-top:3px;">─ 개인 소장용 파일 : <input type="text" class="underline-input" style="width:380px;"></span></span></li>
         <li><span class="clause-num">6</span><span>만일 본인이 상기 사항을 위반하였을 때에는 이유 여하를 막론하고 서약에 의거 민·형사상의 책임을 지며, 회사에서 요구하는 손해배상의 의무를 지키겠습니다.</span></li>
     </ul>
-
     <div class="confirm-row">
         <b>확인</b> 퇴사 전 필요한 전자결재(연차/근태/지출) 신청 및 승인을 확인함. <span style="font-weight:bold; margin-left:5px;">(인)</span>
         <div style="margin-top:5px; font-weight:800;">본 사직서는 퇴사일까지 경영지원팀에 제출되어야 합니다.</div>
     </div>
-
     <div class="footer">
         <div class="footer-date">2026년 4월 14일</div>
         <div class="footer-sign-area">
@@ -260,12 +270,12 @@
     <div class="doc-header">
         <div class="doc-main-title" style="font-size: 30px; line-height: 1.2;">임금 및 퇴직금<br>지급기한 연장 합의서</div>
     </div>
-    <div class="approval-area" style="margin-top: -45px;"> <table class="approval-table">
+    <div class="approval-area" style="margin-top: -45px;">
+        <table class="approval-table">
             <tr><th>PM/조직장</th><th>대표이사</th><th>경영지원팀</th></tr>
             <tr><td class="sign-cell"></td><td class="sign-cell"></td><td class="sign-cell"></td></tr>
         </table>
     </div>
-
     <table class="info-table" style="margin-top: 15px;">
         <tr>
             <th>소속 / 성명</th>
@@ -282,18 +292,16 @@
             </td>
         </tr>
     </table>
-
     <div class="agreement-body">
-        </br>상기 본인은 <span class="sync-leave-date" style="font-weight:900;">0000년 00월 00일</span> 퇴직함에 있어<br>
+        <br>상기 본인은 <span class="sync-leave-date" style="font-weight:900;">0000년 00월 00일</span> 퇴직함에 있어<br>
         <span class="sync-leave-month" style="font-weight:900;">00</span>월분 임금(퇴직금 발생시는 퇴직금 포함)을<br>
         근로기준법 36조에 의거 14일 이내에 수령하여야 하나, <br> 쌍방 합의하에 
         임금은 귀사에서 지급하는 급여 지급일, <br>퇴직금은 익월 말경까지 수령하는 것으로 합의합니다.
     </div>
-<br>
+    <br>
     <div style="font-size:12px; margin-top: 10px; margin-bottom:20px;">
         * 마지막 급여명세서 받을 개인 이메일 주소 : <input type="text" class="underline-input" style="width:280px;" placeholder="이메일 주소 입력">
     </div>
-
     <div class="footer">
         <div class="footer-date">2026년 4월 14일</div>
         <div class="footer-sign-area">
@@ -315,12 +323,10 @@
             <tr><td class="sign-cell"></td><td class="sign-cell"></td><td class="sign-cell"></td></tr>
         </table>
     </div>
-
     <div class="body-headline" style="font-size: 18px; border-bottom: 1px solid #ddd; padding: 8px 0;">
         본인은 퇴사 후 플러스엑스㈜에서 취득한 고객 및 임직원의 개인정보와<br>
         프로젝트 정보 및 직무상 비밀사항을 아래와 같이 지킬 것을 서약하며,<br>본 서약서를 제출합니다.
     </div>
-
     <ul class="clause-list">
         <li><span class="clause-num">1</span><span>본 계약에 명시된 내용은 직원이 근로기간 중에 열람한 PlusX 또는 협력사(이하 ‘회사’)가 보유한 임직원의 개인정보, 계약과 관련된 정보 및 작업 산출물, 다양한 영업비밀, 기타 재산적 기밀, 회사의 사업 운영에 사용되거나, 회사의 고객 또는 잠재적 고객으로부터 얻는 다양한 정보(이하 총칭하여, ‘비밀정보’)를 포함하며 이를 누설하거나 도용하지 않겠습니다.</span></li>
         <li><span class="clause-num">2</span><span>본인은 Plus X에 재직 시 취득한 ‘비밀정보’에 대하여 전산 시스템 등으로의 복사, 가공, 전달 및 기타 방법에 의한 복제, 출력, 배포를 일절 하지 않겠습니다. 이는 자료의 형태(인쇄물, 디지털 또는 전자파일, 사진, 동영상 등) 여부를 불문하고 적용될 것입니다.</span></li>
@@ -329,16 +335,13 @@
         <li><span class="clause-num">5</span><span>본인은 회사의 규정 및 지침 등을 준수하고, 허가 받지 않은 정보나 시설 등에 절대 접근하지 않겠으며, 특히 회사에서 제공하는 하드웨어나 소프트웨어는 회사의 자산으로서 개인적 목적을 위해 사용하지 않겠습니다. 아울러 회사에서 제공하지 아니한 하드웨어, 소프트웨어 사용으로 인한 해킹·바이러스 및 기업정보유출 관련 문제 발생 시 책임을 지겠습니다.</span></li>
         <li><span class="clause-num">6</span><span>본인은 위 각 서약사항을 위반 시, 정보통신망 이용촉진 및 ‘정보보호 등에 관한 법률’, ‘형법’ 등 관련 법령에 규정된 민·형사상의 책임 등 어떠한 불이익도 감수할 것이며, Plus X에 끼친 손해에 대해서 지체 없이 배상·복구할 것을 서약합니다.</span></li>
     </ul>
-
     <div class="confirm-row" style="margin-top: 5px;">
         <b>(확인)</b> 본 서약의 유효기간은 퇴사 후 5년간 유효합니다.
     </div>
-
     <table class="info-table" style="margin-top:5px; border-bottom: 2.5px solid #1a1a1a;">
         <tr><th>퇴사일</th><td><span class="sync-leave-date" style="font-weight:700;"></span><span class="auto-info"> (자동반영)</span></td></tr>
         <tr><th style="border-bottom:none;">소속</th><td style="border-bottom:none;"><span class="sync-dept" style="font-weight:700;"></span><span class="auto-info"> (자동반영)</span></td></tr>
     </table>
-
     <div class="footer">
         <div class="footer-date">2026년 4월 14일</div>
         <div class="footer-sign-area">
