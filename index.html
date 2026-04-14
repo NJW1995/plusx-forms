@@ -169,7 +169,7 @@
     <div id="password-screen">
         <div class="pw-box">
             <h2>Plus X Document Hub🔒</h2>
-            <p>사내 전용 페이지입니다. 비밀번호를 입력해주세요.</p>
+            <p>사내 전용 페이지입니다. 비밀번호를 입력해주세요.</br>임시비번:0000</p>
             <input id="pw-input" type="password" placeholder="비밀번호 입력" />
             <button id="pw-btn" onclick="checkPassword()">확인</button>
             <div id="error-msg">❌ 비밀번호가 올바르지 않습니다</div>
@@ -177,7 +177,7 @@
     </div>
 
     <script>
-        const PASSWORD = "7717";
+        const PASSWORD = "0000";
 
         function checkPassword() {
             const input = document.getElementById("pw-input").value;
