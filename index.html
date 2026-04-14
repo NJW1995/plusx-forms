@@ -177,23 +177,32 @@
     </div>
 
     <script>
-        const PASSWORD = "0000";
+    const PASSWORD = "0000";
 
-        function checkPassword() {
-            const input = document.getElementById("pw-input").value;
-            if (input === PASSWORD) {
-                document.getElementById("password-screen").style.display = "none";
-            } else {
-                document.getElementById("error-msg").style.display = "block";
-                document.getElementById("pw-input").value = "";
-                document.getElementById("pw-input").focus();
-            }
+    // 페이지 로드 시 이미 인증되었는지 확인
+    window.onload = function() {
+        if (localStorage.getItem("isAuthorized") === "true") {
+            document.getElementById("password-screen").style.display = "none";
         }
+    };
 
-        document.getElementById("pw-input").addEventListener("keydown", function(e) {
-            if (e.key === "Enter") checkPassword();
-        });
-    </script>
+    function checkPassword() {
+        const input = document.getElementById("pw-input").value;
+        if (input === PASSWORD) {
+            // 인증 성공 시 로컬 스토리지에 상태 저장
+            localStorage.setItem("isAuthorized", "true");
+            document.getElementById("password-screen").style.display = "none";
+        } else {
+            document.getElementById("error-msg").style.display = "block";
+            document.getElementById("pw-input").value = "";
+            document.getElementById("pw-input").focus();
+        }
+    }
+
+    document.getElementById("pw-input").addEventListener("keydown", function(e) {
+        if (e.key === "Enter") checkPassword();
+    });
+</script>
 
     <!-- 기존 내용 그대로 -->
     <header>
