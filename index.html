@@ -88,123 +88,10 @@
             font-size: 0.75rem;
             font-weight: bold;
         }
-
-        /* 비밀번호 화면 스타일 */
-        #password-screen {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 9999;
-        }
-
-        #password-screen .pw-box {
-            background: white;
-            border-radius: 16px;
-            padding: 48px 40px;
-            text-align: center;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
-            width: 100%;
-            max-width: 380px;
-        }
-
-        #password-screen h2 {
-            margin: 0 0 8px;
-            font-size: 1.4rem;
-            color: #111;
-        }
-
-        #password-screen p {
-            color: #888;
-            font-size: 0.9rem;
-            margin-bottom: 24px;
-        }
-
-        #pw-input {
-            width: 100%;
-            padding: 12px 16px;
-            font-size: 16px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            outline: none;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        #pw-input:focus {
-            border-color: #ff6b00;
-        }
-
-        #pw-btn {
-            margin-top: 12px;
-            width: 100%;
-            padding: 13px;
-            background: #ff6b00;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-
-        #pw-btn:hover {
-            background: #e05e00;
-        }
-
-        #error-msg {
-            margin-top: 12px;
-            color: #e53935;
-            font-size: 0.88rem;
-            display: none;
-        }
     </style>
 </head>
 <body>
 
-    <!-- 비밀번호 화면 -->
-    <div id="password-screen">
-        <div class="pw-box">
-            <h2>Plus X Document Hub🔒</h2>
-            <p>사내 전용 페이지입니다. 비밀번호를 입력해주세요.</br>(임시 비밀번호:0000)</p>
-            <input id="pw-input" type="password" placeholder="비밀번호 입력" />
-            <button id="pw-btn" onclick="checkPassword()">확인</button>
-            <div id="error-msg">❌ 비밀번호가 올바르지 않습니다</div>
-        </div>
-    </div>
-
-    <script>
-    const PASSWORD = "0000";
-
-    // 페이지 로드 시 이미 인증되었는지 확인
-    window.onload = function() {
-        if (localStorage.getItem("isAuthorized") === "true") {
-            document.getElementById("password-screen").style.display = "none";
-        }
-    };
-
-    function checkPassword() {
-        const input = document.getElementById("pw-input").value;
-        if (input === PASSWORD) {
-            // 인증 성공 시 로컬 스토리지에 상태 저장
-            localStorage.setItem("isAuthorized", "true");
-            document.getElementById("password-screen").style.display = "none";
-        } else {
-            document.getElementById("error-msg").style.display = "block";
-            document.getElementById("pw-input").value = "";
-            document.getElementById("pw-input").focus();
-        }
-    }
-
-    document.getElementById("pw-input").addEventListener("keydown", function(e) {
-        if (e.key === "Enter") checkPassword();
-    });
-</script>
-
-    <!-- 기존 내용 그대로 -->
     <header>
         <h1>Plus X Document Hub</h1>
         <p>플러스엑스에서 사용중인 사내 표준 서식 보관함입니다.</p>
@@ -258,7 +145,8 @@
             <p><strong>개요:</strong> 경조사 관련 복지 신청할 때</p>
             <p><strong>전자결재:</strong> 경조사 연차 / 개인경비지출</p>
         </div>
-                <div class="card" onclick="location.href='form6.html'">
+        
+        <div class="card" onclick="location.href='form6.html'">
             <div class="tag">퇴사서류</div>
             <h3>퇴사자 제출서류</h3>
             <p><strong>대상자:</strong> 퇴사자</p>
